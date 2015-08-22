@@ -95,6 +95,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extensions\TimeSpanPlus.cs" />
+    <Compile Include="GlobalVar.cs" />
     <Compile Include="Services\SudokuSolverMatriceManager.cs" />
     <Compile Include="Services\SudokuSolverTextBoxManager.cs" />
     <Compile Include="Util\Enums.cs" />
@@ -102,11 +103,11 @@
     <Compile Include="Exceptions\SudokuSolverException.cs" />
     <Compile Include="Extensions\DoubleExtension.cs" />
     <Compile Include="Extensions\IntExtension.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="FormSudoku.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="FormSudoku.Designer.cs">
+      <DependentUpon>FormSudoku.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\SudokuSolverService.cs" />
     <Compile Include="Program.cs" />
@@ -116,8 +117,8 @@
     <EmbeddedResource Include="Controls\SudokuPanel.resx">
       <DependentUpon>SudokuPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="FormSudoku.resx">
+      <DependentUpon>FormSudoku.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

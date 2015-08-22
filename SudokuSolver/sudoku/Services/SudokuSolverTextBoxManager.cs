@@ -83,33 +83,43 @@ namespace SudokuSolver.Services
                 foreach (TextBoxPlus p in this.vett)
                 {
                     p.KeyDown += (object sender, KeyEventArgs e) => {
-                        e.SuppressKeyPress = true;
+
+                        if (GlobalVar.Stato != AppStatus.Waiting)
+                        {
+                            e.SuppressKeyPress = true;
+                            return;
+                        }
+                        else if(!(e.KeyCode==Keys.Delete || e.KeyCode==Keys.Back))
+                                e.SuppressKeyPress = true;
+
+
+                        sender.Cast<TextBoxPlus>().Type = NumberType.InsertByUser;
                         try
                         {
                             if (e.KeyCode == Keys.Up)
                             {
-                                Tuple<int, int> t = GetPos((TextBoxPlus)sender);
+                                Tuple<int, int> t = GetPos(sender.Cast<TextBoxPlus>());
                                 if (t.Item1 > 0)
                                     GetTextBox(t.Item1 - 1, t.Item2).Select();
                                 return;
                             }
                             else if (e.KeyCode == Keys.Down)
                             {
-                                Tuple<int, int> t = GetPos((TextBoxPlus)sender);
+                                Tuple<int, int> t = GetPos(sender.Cast<TextBoxPlus>());
                                 if (t.Item1 < _Dim - 1)
                                     GetTextBox(t.Item1 + 1, t.Item2).Select();
                                 return;
                             }
                             else if (e.KeyCode == Keys.Right)
                             {
-                                Tuple<int, int> t = GetPos((TextBoxPlus)sender);
+                                Tuple<int, int> t = GetPos(sender.Cast<TextBoxPlus>());
                                 if (t.Item2 < _Dim - 1)
                                     GetTextBox(t.Item1, t.Item2 + 1).Select();
                                 return;
                             }
                             else if (e.KeyCode == Keys.Left)
                             {
-                                Tuple<int, int> t = GetPos((TextBoxPlus)sender);
+                                Tuple<int, int> t = GetPos(sender.Cast<TextBoxPlus>());
                                 if (t.Item2 > 0)
                                     GetTextBox(t.Item1, t.Item2 - 1).Select();
                                 return;
@@ -117,8 +127,16 @@ namespace SudokuSolver.Services
 
                             KeysConverter kc = new KeysConverter();
                             string s = kc.ConvertToString(e.KeyCode).Replace("NumPad", "");
-                            ((TextBox)sender).Text = GetCorrectString(((TextBox)sender).Text + s);
-                            ((TextBox)sender).Select(((TextBox)sender).Text.Length, ((TextBox)sender).Text.Length);
+                            string complete = sender.Cast<TextBoxPlus>().Text.Substring(0, sender.Cast<TextBoxPlus>().SelectionStart) + s + sender.Cast<TextBoxPlus>().Text.Substring(sender.Cast<TextBoxPlus>().SelectionStart+ sender.Cast<TextBoxPlus>().SelectionLength );
+
+                            if ( IsCorrectString(s))
+                            {
+                                if(!IsCorrectString(complete))
+                                    sender.Cast<TextBoxPlus>().SelectAll();
+
+                                sender.Cast<TextBoxPlus>().SelectedText = GetCorrectString(s);
+                            }
+
                         }
                         catch (Exception ex)
                         {
@@ -179,6 +197,26 @@ namespace SudokuSolver.Services
         public string GetCorrectString(string s)
         {
             return GetCorrectString(s, _Dim);
+        }
+        public static bool IsCorrectString(string s, int Dim)
+        {
+            string ss = s.Trim();
+            try
+            {
+                int n = int.Parse(ss);
+                if (n < 1 || n > Dim)
+                    return false;
+                else
+                    return ss == s;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public bool IsCorrectString(string s)
+        {
+            return IsCorrectString(s, _Dim);
         }
         public void CorrectTextBox(int x,int y)
         {

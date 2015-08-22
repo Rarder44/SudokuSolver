@@ -8,60 +8,12 @@ namespace SudokuSolver.Controls
 {
     public partial class SudokuPanel : UserControl
     {
-        public SudokuPanel()
-        {
-            InitializeComponent();
-        }
-        public void AddOrizzontalControl(Control c, Control RelativeTo = null,int PaddingLeft=0,int PaddingTop=0)
-        {
-            int x=0, y = 0;
-            if(RelativeTo==null)
-            {
-                foreach(Control tc in Controls)
-                    if (tc.Location.X > x)
-                    {
-                        x = tc.Location.X+tc.Size.Width;
-                        y = tc.Location.Y;
-                    }
-                x += PaddingLeft;
-                y += PaddingTop;
-            }
-            else
-            {
-                x = RelativeTo.Location.X+RelativeTo.Size.Width+PaddingLeft;
-                y = RelativeTo.Location.Y+PaddingTop;
-            }
-            c.Location = new Point(x, y);
-            Controls.Add(c);
-        }
-        public void AddVerticalControl(Control c,  Control RelativeTo = null,int PaddingLeft = 0, int PaddingTop = 0)
-        {
-            int x = 0, y = 0;
-            if (RelativeTo == null)
-            {
-                foreach (Control tc in Controls)
-                    if (tc.Location.Y > y)
-                    {
-                        x = tc.Location.X ;
-                        y = tc.Location.Y + tc.Size.Height;
-                    }
-                x += PaddingLeft;
-                y += PaddingTop;
-            }
-            else
-            {
-                x = RelativeTo.Location.X + PaddingLeft;
-                y = RelativeTo.Location.Y + RelativeTo.Size.Height +PaddingTop;
-            }
-            c.Location = new Point(x, y);
-            Controls.Add(c);
-        }
-
+        
         int _NormalSpace = 0;
         int _PlusSpace = 0;
         int _CellWidth = 22;
         int _CellHeight = 20;
-        int NumRow = 3;
+        int NumRow =3;
         public int NormalSpace
         {
             get { return _NormalSpace; }
@@ -83,6 +35,54 @@ namespace SudokuSolver.Controls
             set { _CellHeight = value; }
         }
 
+        public SudokuPanel()
+        {
+            InitializeComponent();
+        }
+        public void AddOrizzontalControl(Control c, Control RelativeTo = null, int PaddingLeft = 0, int PaddingTop = 0)
+        {
+            int x = 0, y = 0;
+            if (RelativeTo == null)
+            {
+                foreach (Control tc in Controls)
+                    if (tc.Location.X > x)
+                    {
+                        x = tc.Location.X + tc.Size.Width;
+                        y = tc.Location.Y;
+                    }
+                x += PaddingLeft;
+                y += PaddingTop;
+            }
+            else
+            {
+                x = RelativeTo.Location.X + RelativeTo.Size.Width + PaddingLeft;
+                y = RelativeTo.Location.Y + PaddingTop;
+            }
+            c.Location = new Point(x, y);
+            Controls.Add(c);
+        }
+        public void AddVerticalControl(Control c, Control RelativeTo = null, int PaddingLeft = 0, int PaddingTop = 0)
+        {
+            int x = 0, y = 0;
+            if (RelativeTo == null)
+            {
+                foreach (Control tc in Controls)
+                    if (tc.Location.Y > y)
+                    {
+                        x = tc.Location.X;
+                        y = tc.Location.Y + tc.Size.Height;
+                    }
+                x += PaddingLeft;
+                y += PaddingTop;
+            }
+            else
+            {
+                x = RelativeTo.Location.X + PaddingLeft;
+                y = RelativeTo.Location.Y + RelativeTo.Size.Height + PaddingTop;
+            }
+            c.Location = new Point(x, y);
+            Controls.Add(c);
+        }
 
 
         public SudokuSolverTextBoxManager Genera9x9()

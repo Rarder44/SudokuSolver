@@ -14,99 +14,31 @@ using SudokuSolver.Classes;
 namespace SudokuSolver
 {
 
-    public partial class Form1 : Form
+    public partial class FormSudoku : Form
     {
-        AppStatus _stato;
-        AppStatus stato
-        {
-            get { return _stato; }
-            set
-            {
-                _stato = value;
-                if (_stato==AppStatus.Waiting)
-                {
-                    button1.SetTextInvoke("Risolvi");
-                    button1.SetEnableInvoke(true);
-                    button2.SetEnableInvoke(true);
-                    button3.SetEnableInvoke(true);
-                    button4.SetEnableInvoke(true);
-                    button5.SetEnableInvoke(true);
-                    textBox1.SetEnableInvoke(true);
-                    comboBox1.SetEnableInvoke(true);
-                    timer1.Stop();
-                    Tempo.SetTime(0);
-
-                }
-                else if (_stato == AppStatus.Working)
-                {
-                    button1.SetTextInvoke("Stop");
-                    button1.SetEnableInvoke(true);
-                    button2.SetEnableInvoke(false);
-                    button3.SetEnableInvoke(false);
-                    button4.SetEnableInvoke(false);
-                    button5.SetEnableInvoke(false);
-                    textBox1.SetEnableInvoke(false);
-                    comboBox1.SetEnableInvoke(false);
-
-                    label1.SetTextInvoke(Tempo.ToString(@"mm\:ss"));
-                    timer1.Start();
-                }
-                else if (_stato == AppStatus.Stopping)
-                {
-                    button1.SetEnableInvoke(false);
-                    button2.SetEnableInvoke(false);
-                    button3.SetEnableInvoke(false);
-                    button4.SetEnableInvoke(false);
-                    button5.SetEnableInvoke(false);
-                    textBox1.SetEnableInvoke(false);
-                    comboBox1.SetEnableInvoke(false);
-
-                }
-                else if (_stato == AppStatus.Starting)
-                {
-                    button1.SetEnableInvoke(false);
-                    button2.SetEnableInvoke(false);
-                    button3.SetEnableInvoke(false);
-                    button4.SetEnableInvoke(false);
-                    button5.SetEnableInvoke(false);
-                    textBox1.SetEnableInvoke(false);
-                    comboBox1.SetEnableInvoke(false);
-                    label1.SetTextInvoke("00:00");
-                }
-                else if (_stato == AppStatus.ModifyingGrid)
-                {
-                    button1.SetEnableInvoke(false);
-                    button2.SetEnableInvoke(false);
-                    button3.SetEnableInvoke(false);
-                    button4.SetEnableInvoke(false);
-                    button5.SetEnableInvoke(false);
-                    textBox1.SetEnableInvoke(false);
-                    comboBox1.SetEnableInvoke(false);
-                }
-            }
-        }
         SudokuSolverService sss;
         int DimIniziale = 16;
         TimeSpanPlus Tempo;
 
 
-        public Form1()
+        public FormSudoku()
         { 
             InitializeComponent();
-            stato = AppStatus.Starting;
-            Util.Util.Init();
+            GlobalVar.AppStatusChange += GlobalVar_AppStatusChange;
 
+            GlobalVar.Stato = AppStatus.Starting;
+            Util.Util.Init();
             InitGrid(DimIniziale);
 
 
-            stato = AppStatus.Waiting;
+            GlobalVar.Stato = AppStatus.Waiting;
         }
-        public void InitGrid(int Dim,bool NewSudokuSolverService=true)
+        public void InitGrid(int Dim, bool NewSudokuSolverService = true)
         {
-            if (stato == AppStatus.Starting || stato == AppStatus.Waiting)
+            if (GlobalVar.Stato == AppStatus.Starting || GlobalVar.Stato == AppStatus.Waiting)
             {
-                AppStatus old = stato;
-                stato = AppStatus.ModifyingGrid;
+                AppStatus old = GlobalVar.Stato;
+                GlobalVar.Stato = AppStatus.ModifyingGrid;
                 if (NewSudokuSolverService)
                 {
                     sss = new SudokuSolverService(Dim);
@@ -154,17 +86,11 @@ namespace SudokuSolver
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message);
-                }             
-                
-                stato = old;
+                }
+
+                GlobalVar.Stato = old;
             }
         }
-
-        private void Sss_NeedTextBoxMatriceResize(int Dim)
-        {
-            InitGrid(Dim, false);
-        }
-
         public void ResizeForm()
         {
             Size t = sudokuPanel1.GetTheoreticalSize();
@@ -174,70 +100,119 @@ namespace SudokuSolver
 
             MinimumSize = new Size(Width, Height > HeightPanel ? Height : HeightPanel);
             Size = MinimumSize;
-            
-
         }
 
+        private void GlobalVar_AppStatusChange(AppStatus Old, AppStatus New)
+        {
+            if (New == AppStatus.Waiting)
+            {
+                button1.SetTextInvoke("Risolvi");
+                button1.SetEnableInvoke(true);
+                button2.SetEnableInvoke(true);
+                button3.SetEnableInvoke(true);
+                button4.SetEnableInvoke(true);
+                button5.SetEnableInvoke(true);
+                textBox1.SetEnableInvoke(true);
+                comboBox1.SetEnableInvoke(true);
+                timer1.Stop();
+                Tempo.SetTime(0);
+
+            }
+            else if (New == AppStatus.Working)
+            {
+                button1.SetTextInvoke("Stop");
+                button1.SetEnableInvoke(true);
+                button2.SetEnableInvoke(false);
+                button3.SetEnableInvoke(false);
+                button4.SetEnableInvoke(false);
+                button5.SetEnableInvoke(false);
+                textBox1.SetEnableInvoke(false);
+                comboBox1.SetEnableInvoke(false);
+
+                label1.SetTextInvoke(Tempo.ToString(@"mm\:ss"));
+                timer1.Start();
+            }
+            else if (New == AppStatus.Stopping)
+            {
+                button1.SetEnableInvoke(false);
+                button2.SetEnableInvoke(false);
+                button3.SetEnableInvoke(false);
+                button4.SetEnableInvoke(false);
+                button5.SetEnableInvoke(false);
+                textBox1.SetEnableInvoke(false);
+                comboBox1.SetEnableInvoke(false);
+
+            }
+            else if (New == AppStatus.Starting)
+            {
+                button1.SetEnableInvoke(false);
+                button2.SetEnableInvoke(false);
+                button3.SetEnableInvoke(false);
+                button4.SetEnableInvoke(false);
+                button5.SetEnableInvoke(false);
+                textBox1.SetEnableInvoke(false);
+                comboBox1.SetEnableInvoke(false);
+                label1.SetTextInvoke("00:00");
+            }
+            else if (New == AppStatus.ModifyingGrid)
+            {
+                button1.SetEnableInvoke(false);
+                button2.SetEnableInvoke(false);
+                button3.SetEnableInvoke(false);
+                button4.SetEnableInvoke(false);
+                button5.SetEnableInvoke(false);
+                textBox1.SetEnableInvoke(false);
+                comboBox1.SetEnableInvoke(false);
+            }
+        }     
+        private void Sss_NeedTextBoxMatriceResize(int Dim)
+        {
+            InitGrid(Dim, false);
+        }
         private void Sss_FinishSudoku(int cod)
         {
-            stato = AppStatus.Waiting;
+            GlobalVar.Stato = AppStatus.Waiting;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (stato == AppStatus.Waiting)
+            if (GlobalVar.Stato == AppStatus.Waiting)
             {
-                stato = AppStatus.Working;
+                GlobalVar.Stato = AppStatus.Working;
                 if (comboBox1.SelectedItem is ObjTypeRisolutore)
                     ((ObjTypeRisolutore)comboBox1.SelectedItem).FuncRisolutore();
 
             }
-            else if (stato == AppStatus.Working)
+            else if (GlobalVar.Stato == AppStatus.Working)
             {
-                stato = AppStatus.Stopping;
+                GlobalVar.Stato = AppStatus.Stopping;
                 new Thread(() =>
                 {
                     sss.Stoppa();
-                    stato = AppStatus.Waiting;
+                    GlobalVar.Stato = AppStatus.Waiting;
                 }).Start();
             }
-         }
-        
+         }      
         private void button2_Click(object sender, EventArgs e)
         {
-            if(stato==AppStatus.Waiting)
+            if(GlobalVar.Stato == AppStatus.Waiting)
             {
                 sss.pulisci();
                 label1.Text = "00:00";
             }
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
             saveFileDialog1.Filter = "file mappa sudoku | *.fms";
             saveFileDialog1.FileName = "";
             saveFileDialog1.ShowDialog(); 
         }
-
         private void button4_Click(object sender, EventArgs e)
         {
             openFileDialog1.Multiselect = false;
             openFileDialog1.Filter = "file mappa sudoku | *.fms";
             openFileDialog1.FileName = "";
             openFileDialog1.ShowDialog();
-        }
-
- 
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            Tempo.AddSeconds(1);
-            label1.Text = Tempo.ToString(@"mm\:ss");
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            sss.StoppaAsync();
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
@@ -249,23 +224,14 @@ namespace SudokuSolver
                     sss.LoadByFile(openFileDialog1.FileName);
                 }
             }
-            catch(SudokuSolverException ex)
+            catch (SudokuSolverException ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             sss.WriteOnFile(saveFileDialog1.FileName);
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            int n;
-            if (!int.TryParse(sender.Cast<TextBox>().Text, out n))
-                sender.Cast<TextBox>().Text = "";
-            
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -279,8 +245,8 @@ namespace SudokuSolver
                 {
                     KeysConverter kc = new KeysConverter();
                     string s = kc.ConvertToString(e.KeyCode).Replace("NumPad", "");
-                    if ((sender.Cast<TextBox>().Text + s).IsInt())          
-                        sender.Cast<TextBox>().SelectedText = s;  
+                    if ((sender.Cast<TextBox>().Text + s).IsInt())
+                        sender.Cast<TextBox>().SelectedText = s;
                 }
                 catch (Exception ex)
                 {
@@ -288,16 +254,27 @@ namespace SudokuSolver
                 }
             }
         }
-
         private void button5_Click(object sender, EventArgs e)
         {
-            
+
             if (textBox1.Text.IsInt())
                 InitGrid(textBox1.Text.ParseInt());
 
             else
                 MessageBox.Show("Dimensione non valida");
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Tempo.AddSeconds(1);
+            label1.Text = Tempo.ToString(@"mm\:ss");
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            sss.StoppaAsync();
+        }
+
     }
 
 
