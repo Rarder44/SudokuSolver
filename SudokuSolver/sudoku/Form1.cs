@@ -134,7 +134,9 @@ namespace SudokuSolver
                     comboBox1.Items.Clear();
                     comboBox1.SelectedIndex = comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviNormaleAsync(); }, "Normale"));
                     comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviRicorsioneAsync(); }, "Ricorsione"));
+                    comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviRicorsioneAsync(false); }, "Ricorsione no step"));
                     comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviCombinatoAsync(); }, "Combinato"));
+                    comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviCombinatoAsync(false); }, "Combinato no step"));
                     i++;
                     button2.TabIndex = i;
                     i++;

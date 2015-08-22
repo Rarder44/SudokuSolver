@@ -27,7 +27,7 @@ namespace SudokuSolver.Services
             SetDimMatrice(mng._Dim);
             for (int i = 0; i < mng._Dim; i++)
                 for (int j = 0; j < mng._Dim; j++)
-                    SetNumber(i, j, mng.GetNumber(i, j));
+                    SetNumber(i, j, mng.GetNumber(i, j), mng.GetSudokuNumber(i, j).Type);
         }
         public SudokuSolverMatriceManager(int Dim)
         {

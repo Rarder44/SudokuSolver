@@ -82,14 +82,15 @@ namespace SudokuSolver.Services
             }
             mngMat.PulisciCodErr();
         }
-        public void RisolviRicorsione()
+        public void RisolviRicorsione(bool ShowStep=true)
         {
             TextBoxToMatrice();
             mngTxb.SetFreeCellAs(NumberType.InsertByProgram);
 
-            funzione_ricorsiva(clone());
+            funzione_ricorsiva(clone(), ShowStep);
+                
         }
-        public void RisolviCombinato()
+        public void RisolviCombinato(bool ShowStep = true)
         {
             TextBoxToMatrice();
             mngTxb.SetFreeCellAs(NumberType.InsertByProgram);
@@ -115,8 +116,7 @@ namespace SudokuSolver.Services
             mngMat.PulisciCodErr();
 
             if(!completo())
-                funzione_ricorsiva(clone());
-
+                funzione_ricorsiva(clone(), ShowStep);
         }
 
         public void Stoppa()
@@ -139,38 +139,41 @@ namespace SudokuSolver.Services
             {
                 return;
             }
-            new Thread(() =>
-            {
-                RisolviNormale();
-                if (FinishSudoku != null)
-                    FinishSudoku(1);
-            }).Start();
+            Risolutore = new Thread(() =>
+             {
+                 RisolviNormale();
+                 if (FinishSudoku != null)
+                     FinishSudoku(1);
+             });
+            Risolutore.Start();
         }
-        public void RisolviRicorsioneAsync()
+        public void RisolviRicorsioneAsync(bool ShowStep = true)
         {
             if (Risolutore != null && Risolutore.IsAlive)
             {
                 return;
             }
-            new Thread(() =>
+            Risolutore = new Thread(() =>
             {
-                RisolviRicorsione();
+                RisolviRicorsione(ShowStep);
                 if (FinishSudoku != null)
                     FinishSudoku(1);
-            }).Start();
+            });
+            Risolutore.Start();
         }
-        public void RisolviCombinatoAsync()
+        public void RisolviCombinatoAsync(bool ShowStep = true)
         {
             if (Risolutore != null && Risolutore.IsAlive)
             {
                 return;
             }
-            new Thread(() =>
+            Risolutore = new Thread(() =>
             {
-                RisolviCombinato();
+                RisolviCombinato(ShowStep);
                 if (FinishSudoku != null)
                     FinishSudoku(1);
-            }).Start();
+            });
+            Risolutore.Start();
         }
 
         public void StoppaAsync()
@@ -345,25 +348,31 @@ namespace SudokuSolver.Services
                 }
         }
 
-        bool funzione_ricorsiva(SudokuSolverService m)
+        bool funzione_ricorsiva(SudokuSolverService m,bool ShowStep=true)
         {
             Tuple<int,int> v = m.PosizioneMigliore();
             if (v.Item1 == -1)
+            {
+                if(!ShowStep)
+                    m.MatriceToTextBox();
                 return true;
+            }
             int x = v.Item1;
             int y = v.Item2;
 
             for (int i = 1; i <= mngMat.Dim; i++)
                 if (m.puo_starci(x, y, i))
                 {
-                    m.SetNumber(x, y, i);
-                    SetTextBoxNumber(x, y, i, NumberType.InsertByProgram);
+                    m.SetNumber(x, y, i, NumberType.InsertByProgram);
+                    if (ShowStep)
+                        SetTextBoxNumber(x, y, i, NumberType.InsertByProgram);
                     SudokuSolverService sss = m.clone();
-                    if (funzione_ricorsiva(sss))
+                    if (funzione_ricorsiva(sss, ShowStep))
                         return true;
                 }
-            m.SetNumber(x, y, 0);
-            SetTextBoxNumber(x, y,0, NumberType.InsertByProgram);
+            m.SetNumber(x, y, 0, NumberType.InsertByProgram);
+            if (ShowStep)
+                SetTextBoxNumber(x, y,0, NumberType.InsertByProgram);
             return false;
         }
      
