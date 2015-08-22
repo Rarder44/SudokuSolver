@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SudokuSolver.Extensions
+﻿namespace SudokuSolver.Extensions
 {
 
     public static class ObjectExtension
