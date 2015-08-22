@@ -40,13 +40,17 @@ namespace SudokuSolver
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.sudokuPanel1 = new SudokuSolver.Controls.SudokuPanel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Location = new System.Drawing.Point(352, 12);
+            this.button1.Location = new System.Drawing.Point(10, 3);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -57,7 +61,7 @@ namespace SudokuSolver
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(352, 68);
+            this.button2.Location = new System.Drawing.Point(10, 59);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -68,7 +72,7 @@ namespace SudokuSolver
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.Location = new System.Drawing.Point(352, 111);
+            this.button3.Location = new System.Drawing.Point(10, 102);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 3;
@@ -79,7 +83,7 @@ namespace SudokuSolver
             // button4
             // 
             this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.Location = new System.Drawing.Point(352, 140);
+            this.button4.Location = new System.Drawing.Point(10, 131);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 3;
@@ -104,7 +108,7 @@ namespace SudokuSolver
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(352, 182);
+            this.label1.Location = new System.Drawing.Point(30, 157);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(0, 13);
             this.label1.TabIndex = 4;
@@ -114,43 +118,75 @@ namespace SudokuSolver
             // 
             this.comboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(352, 41);
+            this.comboBox1.Location = new System.Drawing.Point(10, 32);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(75, 21);
             this.comboBox1.TabIndex = 6;
+            // 
+            // panel1
+            // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.button5);
+            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.comboBox1);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.button2);
+            this.panel1.Controls.Add(this.button3);
+            this.panel1.Controls.Add(this.button4);
+            this.panel1.Location = new System.Drawing.Point(452, 12);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(88, 258);
+            this.panel1.TabIndex = 7;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(10, 232);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(75, 23);
+            this.button5.TabIndex = 7;
+            this.button5.Text = "Setta Dim";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(10, 206);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(75, 20);
+            this.textBox1.TabIndex = 8;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.textBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyDown);
             // 
             // sudokuPanel1
             // 
             this.sudokuPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.sudokuPanel1.BackColor = System.Drawing.SystemColors.Control;
             this.sudokuPanel1.CellHeight = 20;
             this.sudokuPanel1.CellWidth = 22;
             this.sudokuPanel1.Location = new System.Drawing.Point(12, 12);
             this.sudokuPanel1.Name = "sudokuPanel1";
             this.sudokuPanel1.NormalSpace = 8;
             this.sudokuPanel1.PlusSpace = 15;
-            this.sudokuPanel1.Size = new System.Drawing.Size(334, 288);
+            this.sudokuPanel1.Size = new System.Drawing.Size(434, 325);
             this.sudokuPanel1.TabIndex = 5;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(429, 312);
-            this.Controls.Add(this.comboBox1);
+            this.ClientSize = new System.Drawing.Size(544, 349);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.sudokuPanel1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "SudokuSolver 3.4";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -165,6 +201,9 @@ namespace SudokuSolver
         private System.Windows.Forms.Label label1;
         private SudokuPanel sudokuPanel1;
         private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button5;
     }
 }
 

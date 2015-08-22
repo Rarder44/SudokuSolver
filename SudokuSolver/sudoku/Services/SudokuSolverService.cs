@@ -30,12 +30,14 @@ namespace SudokuSolver.Services
             }
         }
         SudokuSolverMatriceManager mngMat = null;
-        Thread Risolutore;
+        Thread Risolutore=null;
         #endregion
 
-        # region Eventi
+        #region Eventi
         public delegate void FinishSudokuDel(int cod);
         public event FinishSudokuDel FinishSudoku;
+        public delegate void NeedResizeDel(int Dim);
+        public event NeedResizeDel NeedTextBoxMatriceResize;
         #endregion 
 
         #region Costruttori
@@ -498,7 +500,7 @@ namespace SudokuSolver.Services
                 return mngMat.Dim;
             }
             else
-                throw new SudokuSolverException("Le dimensione delli manager non corrispondono");
+                throw new SudokuSolverException("Le dimensione dei manager non corrispondono");
         }
 
         public void MatriceToTextBox()
@@ -525,8 +527,19 @@ namespace SudokuSolver.Services
         public void LoadByFile(String FileName)
         {
             pulisci();
-            mngMat.Deserialize(System.IO.File.ReadAllText(FileName));
-            MatriceToTextBox();
+            int d=mngMat.Deserialize(System.IO.File.ReadAllText(FileName));
+            if(d==mngTxb.Dim)
+                MatriceToTextBox();
+            else
+            {
+                if (NeedTextBoxMatriceResize != null)
+                {
+                    while(!CheckManagersDim())
+                        NeedTextBoxMatriceResize(d);
+                    MatriceToTextBox();
+                }
+                    
+            }
         }
         public void WriteOnFile(String FileName)
         {
@@ -535,8 +548,6 @@ namespace SudokuSolver.Services
         }
 
         #endregion
-
-
 
         #region Set Get TextBox
         public int GetTextBoxNumber(int x, int y)
@@ -563,5 +574,7 @@ namespace SudokuSolver.Services
         }
 
         #endregion
+
+
     }
 }

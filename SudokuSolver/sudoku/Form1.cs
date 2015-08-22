@@ -34,6 +34,8 @@ namespace SudokuSolver
                     button2.SetEnableInvoke(true);
                     button3.SetEnableInvoke(true);
                     button4.SetEnableInvoke(true);
+                    button5.SetEnableInvoke(true);
+                    textBox1.SetEnableInvoke(true);
                     comboBox1.SetEnableInvoke(true);
                     timer1.Stop();
                     Tempo.SetTime(0);
@@ -46,6 +48,8 @@ namespace SudokuSolver
                     button2.SetEnableInvoke(false);
                     button3.SetEnableInvoke(false);
                     button4.SetEnableInvoke(false);
+                    button5.SetEnableInvoke(false);
+                    textBox1.SetEnableInvoke(false);
                     comboBox1.SetEnableInvoke(false);
 
                     label1.SetTextInvoke(Tempo.ToString(@"mm\:ss"));
@@ -57,6 +61,8 @@ namespace SudokuSolver
                     button2.SetEnableInvoke(false);
                     button3.SetEnableInvoke(false);
                     button4.SetEnableInvoke(false);
+                    button5.SetEnableInvoke(false);
+                    textBox1.SetEnableInvoke(false);
                     comboBox1.SetEnableInvoke(false);
 
                 }
@@ -66,15 +72,26 @@ namespace SudokuSolver
                     button2.SetEnableInvoke(false);
                     button3.SetEnableInvoke(false);
                     button4.SetEnableInvoke(false);
+                    button5.SetEnableInvoke(false);
+                    textBox1.SetEnableInvoke(false);
                     comboBox1.SetEnableInvoke(false);
-
+                    label1.SetTextInvoke("00:00");
+                }
+                else if (_stato == AppStatus.ModifyingGrid)
+                {
+                    button1.SetEnableInvoke(false);
+                    button2.SetEnableInvoke(false);
+                    button3.SetEnableInvoke(false);
+                    button4.SetEnableInvoke(false);
+                    button5.SetEnableInvoke(false);
+                    textBox1.SetEnableInvoke(false);
+                    comboBox1.SetEnableInvoke(false);
                 }
             }
         }
         SudokuSolverService sss;
-        int Dim = 16;
+        int DimIniziale = 16;
         TimeSpanPlus Tempo;
-        Thread th;
 
 
         public Form1()
@@ -83,31 +100,84 @@ namespace SudokuSolver
             stato = AppStatus.Starting;
             Util.Util.Init();
 
-            sss = new SudokuSolverService(Dim);
-            SudokuSolverTextBoxManager tm = sudokuPanel1.Genera(Dim);
-            tm.SetAllCellAs(NumberType.InsertByUser);
-            int i=tm.SetTextBoxIndexs();
+            InitGrid(DimIniziale);
 
-            sss.TextBoxManager=tm;
-            i++;
-            button1.TabIndex = i;
-            i++;
-            button2.TabIndex = i;
-            i++;
-            button3.TabIndex = i;
-            i++;
-            button4.TabIndex = i;
 
-            timer1.Interval = 1000;
-            Tempo = new TimeSpanPlus();
-
-            sss.FinishSudoku += Sss_FinishSudoku;
-
-            comboBox1.SelectedIndex=comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviNormaleAsync(); }, "Normale"));
-            comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviRicorsioneAsync(); }, "Ricorsione"));
-            comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviCombinatoAsync(); }, "Combinato"));
-            
             stato = AppStatus.Waiting;
+        }
+        public void InitGrid(int Dim,bool NewSudokuSolverService=true)
+        {
+            if (stato == AppStatus.Starting || stato == AppStatus.Waiting)
+            {
+                AppStatus old = stato;
+                stato = AppStatus.ModifyingGrid;
+                if (NewSudokuSolverService)
+                {
+                    sss = new SudokuSolverService(Dim);
+                    sss.FinishSudoku += Sss_FinishSudoku;
+                    sss.NeedTextBoxMatriceResize += Sss_NeedTextBoxMatriceResize;
+                }
+
+                try
+                {
+                    SudokuSolverTextBoxManager tm = sudokuPanel1.Genera(Dim);
+                    ResizeForm();
+
+                    tm.SetAllCellAs(NumberType.InsertByUser);
+                    int i = tm.SetTextBoxIndexs();
+
+                    sss.TextBoxManager = tm;
+                    i++;
+                    button1.TabIndex = i;
+                    i++;
+                    comboBox1.TabIndex = i;
+                    comboBox1.Items.Clear();
+                    comboBox1.SelectedIndex = comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviNormaleAsync(); }, "Normale"));
+                    comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviRicorsioneAsync(); }, "Ricorsione"));
+                    comboBox1.Items.Add(new ObjTypeRisolutore(() => { sss.RisolviCombinatoAsync(); }, "Combinato"));
+                    i++;
+                    button2.TabIndex = i;
+                    i++;
+                    button3.TabIndex = i;
+                    i++;
+                    button4.TabIndex = i;
+
+                    timer1.Interval = 1000;
+                    Tempo = new TimeSpanPlus();
+                }
+                catch (SudokuSolverException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (SudokuPanelException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }             
+                
+                stato = old;
+            }
+        }
+
+        private void Sss_NeedTextBoxMatriceResize(int Dim)
+        {
+            InitGrid(Dim, false);
+        }
+
+        public void ResizeForm()
+        {
+            Size t = sudokuPanel1.GetTheoreticalSize();
+            int Width = sudokuPanel1.Location.X + t.Width + panel1.Location.X - (sudokuPanel1.Location.X + sudokuPanel1.Size.Width) + panel1.Width + Size.Width - (panel1.Location.X + panel1.Size.Width);
+            int Height = sudokuPanel1.Location.Y + t.Height + Size.Height - (sudokuPanel1.Location.Y + sudokuPanel1.Size.Height);
+            int HeightPanel = panel1.Location.Y + panel1.Size.Height;
+
+            MinimumSize = new Size(Width, Height > HeightPanel ? Height : HeightPanel);
+            Size = MinimumSize;
+            
+
         }
 
         private void Sss_FinishSudoku(int cod)
@@ -169,16 +239,7 @@ namespace SudokuSolver
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            new Thread(() =>
-            {
-                timer1.Stop();
-                if (th != null)
-                {
-                    th.Abort();
-                    th.Join();
-                }
-                    
-            }).Start();
+            sss.StoppaAsync();
         }
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
@@ -199,6 +260,45 @@ namespace SudokuSolver
         private void saveFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             sss.WriteOnFile(saveFileDialog1.FileName);
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            int n;
+            if (!int.TryParse(sender.Cast<TextBox>().Text, out n))
+                sender.Cast<TextBox>().Text = "";
+            
+        }
+
+        private void textBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+                e.SuppressKeyPress = false;
+            else
+            {
+                e.SuppressKeyPress = true;
+                try
+                {
+                    KeysConverter kc = new KeysConverter();
+                    string s = kc.ConvertToString(e.KeyCode).Replace("NumPad", "");
+                    if ((sender.Cast<TextBox>().Text + s).IsInt())          
+                        sender.Cast<TextBox>().SelectedText = s;  
+                }
+                catch (Exception ex)
+                {
+                    sender.Cast<TextBox>().Text = "";
+                }
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            
+            if (textBox1.Text.IsInt())
+                InitGrid(textBox1.Text.ParseInt());
+
+            else
+                MessageBox.Show("Dimensione non valida");
         }
     }
 

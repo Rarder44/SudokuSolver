@@ -10,7 +10,8 @@ namespace SudokuSolver.Util
         Starting,
         Waiting,
         Working,
-        Stopping
+        Stopping,
+        ModifyingGrid,
     }
 
     public enum NumberType

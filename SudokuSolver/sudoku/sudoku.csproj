@@ -89,6 +89,8 @@
       <DependentUpon>SudokuPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions\ControlExtension.cs" />
+    <Compile Include="Extensions\ObjectExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Extensions\TextBoxPlus.cs">
       <SubType>Component</SubType>
     </Compile>

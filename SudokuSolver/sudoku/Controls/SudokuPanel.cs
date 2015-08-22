@@ -101,14 +101,16 @@ namespace SudokuSolver.Controls
         }
         public SudokuSolverTextBoxManager Genera(int Dimensione)
         {
+            
             SudokuSolverTextBoxManager sss = new SudokuSolverTextBoxManager();
             TextBoxPlus[] ArrTemp = new TextBoxPlus[Dimensione * Dimensione];
             int ArrTempI = 0;
+
             double ris = ((double)Dimensione).Sqrt();
-            if(!ris.IsInteger() || Dimensione<9)         
+            if(!ris.IsInteger())         
                 throw new SudokuPanelException("Valore non accettato per la generazione dello schema");
-            
-            
+
+            Controls.Clear();
             NumRow = (int)ris;
             TextBoxPlus preV = null;
             TextBoxPlus preO = null;
@@ -138,6 +140,23 @@ namespace SudokuSolver.Controls
             return sss;
         }
 
+        public Size GetTheoreticalSize()
+        {
+            int MaxY = 0, MaxX = 0, cc = 0;
+            foreach (Control c in Controls)
+            {
+                cc++;
+                if (c.Location.X + c.Size.Width > MaxX)
+                    MaxX = c.Location.X + c.Size.Width;
+                if (c.Location.Y + c.Size.Height > MaxY)
+                    MaxY = c.Location.Y + c.Size.Height;
+            }
+            return new Size(MaxX, MaxY);
+        }
 
+        public void ResizePanelFromControls()
+        {
+            Size = GetTheoreticalSize();
+        }
     }
 }

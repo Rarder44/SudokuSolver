@@ -20,10 +20,6 @@ namespace SudokuSolver.Services
             {
                 return _Dim;
             }
-            /*set
-            {
-                _Dim = value;
-            }*/
         }
        
         public SudokuSolverTextBoxManager()
@@ -111,7 +107,7 @@ namespace SudokuSolver.Services
                             }
 
                             KeysConverter kc = new KeysConverter();
-                            string s= kc.ConvertToString(e.KeyCode);
+                            string s= kc.ConvertToString(e.KeyCode).Replace("NumPad", "");
                             ((TextBox)sender).Text=GetCorrectString(((TextBox)sender).Text + s);
                             ((TextBox)sender).Select(((TextBox)sender).Text.Length, ((TextBox)sender).Text.Length); 
                         }
